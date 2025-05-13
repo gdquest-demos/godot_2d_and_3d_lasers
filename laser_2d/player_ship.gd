@@ -5,7 +5,7 @@ extends Node2D
 
 var current_velocity := Vector2.ZERO
 
-@onready var laser := $LaserBeam2D
+@export var laser: RayCast2D
 
 func _process(delta: float) -> void:
 	look_at(get_global_mouse_position())
