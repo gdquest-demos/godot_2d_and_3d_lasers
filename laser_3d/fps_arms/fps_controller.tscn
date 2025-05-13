@@ -1,0 +1,59 @@
+[gd_scene load_steps=8 format=3 uid="uid://don4817u8figv"]
+
+[ext_resource type="Script" uid="uid://c6qqd1a1chmk8" path="res://laser_3d/fps_arms/fps_controller.gd" id="1_tnmvy"]
+[ext_resource type="PackedScene" uid="uid://b8i8vajkg00s0" path="res://laser_3d/fps_arms/arms_view.tscn" id="1_xwcgv"]
+[ext_resource type="AudioStream" uid="uid://8kk4ubk5hq4c" path="res://laser_3d/assets/sounds/footstep_wood_000.ogg" id="2_0dxr0"]
+[ext_resource type="AudioStream" uid="uid://ditbnksbcilw2" path="res://laser_3d/assets/sounds/footstep_wood_001.ogg" id="3_22f4o"]
+[ext_resource type="AudioStream" uid="uid://bxix0mwm07si6" path="res://laser_3d/assets/sounds/pepSound2.ogg" id="3_tvps0"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rprq0"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_x41ap"]
+
+[node name="FpsController" type="CharacterBody3D" groups=["player"]]
+floor_constant_speed = true
+script = ExtResource("1_tnmvy")
+
+[node name="FootStep" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("2_0dxr0")
+volume_db = -10.0
+max_polyphony = 4
+
+[node name="NoAmmo" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("3_tvps0")
+volume_db = -10.0
+max_polyphony = 4
+
+[node name="Landing" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("3_22f4o")
+max_polyphony = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_rprq0")
+
+[node name="CrouchCeilingCast" type="ShapeCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("SphereShape3D_x41ap")
+target_position = Vector3(0, 0.5, 0)
+collision_mask = 3
+
+[node name="Neck" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Neck"]
+unique_name_in_owner = true
+cull_mask = 1048573
+current = true
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="Neck/Camera3D"]
+remote_path = NodePath("../../../ArmsView/SubViewport/Root")
+
+[node name="ArmsView" parent="." instance=ExtResource("1_xwcgv")]
+unique_name_in_owner = true

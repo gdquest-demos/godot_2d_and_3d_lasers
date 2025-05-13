@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://ct0qytg8xfbvs"]
+
+[ext_resource type="Script" uid="uid://dupovd4w4jt2" path="res://laser_2d/laser_steps/laser_2d_010_raycast_only.gd" id="1"]
+
+[node name="Laser2DRaycastOnly" type="RayCast2D"]
+target_position = Vector2(800, 0)
+script = ExtResource("1")
+cast_speed = 2000.0
+max_length = 800.0
+is_casting = true

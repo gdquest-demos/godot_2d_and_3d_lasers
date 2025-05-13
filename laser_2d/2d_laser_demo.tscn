@@ -1,0 +1,81 @@
+[gd_scene load_steps=7 format=3 uid="uid://b1pk8xay2uxle"]
+
+[ext_resource type="PackedScene" uid="uid://c6u8nw3ec7vgk" path="res://laser_2d/star_field/star_field.tscn" id="1_8sn43"]
+[ext_resource type="PackedScene" uid="uid://b2q3awiuh2tyi" path="res://laser_2d/asteroids/asteroid.tscn" id="2_p7oq8"]
+[ext_resource type="Script" uid="uid://cj57ytj7uw70" path="res://laser_2d/player_ship.gd" id="3_byy1a"]
+[ext_resource type="PackedScene" uid="uid://cb1jy3pa1b4tk" path="res://laser_2d/laser_2d.tscn" id="4_5xi8u"]
+[ext_resource type="Texture2D" uid="uid://r8ik0l6yh254" path="res://laser_2d/topdown-player.svg" id="5_rr7cx"]
+[ext_resource type="Environment" uid="uid://c8ol6uwdees61" path="res://laser_2d/2d_environment.tres" id="6_4gqsa"]
+
+[node name="2DLaserDemo" type="Node2D"]
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="ColorRect" type="ColorRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.158861, 0.175, 1)
+
+[node name="StarField2" parent="Background" instance=ExtResource("1_8sn43")]
+modulate = Color(0.743875, 0.929688, 0.563612, 1)
+position = Vector2(960, 540)
+lifetime = 10.0
+
+[node name="StarField3" parent="Background" instance=ExtResource("1_8sn43")]
+modulate = Color(0.743875, 0.929688, 0.563612, 1)
+position = Vector2(960, 540)
+lifetime = 10.0
+
+[node name="StarField4" parent="Background" instance=ExtResource("1_8sn43")]
+modulate = Color(0.743875, 0.929688, 0.563612, 1)
+position = Vector2(960, 540)
+lifetime = 10.0
+
+[node name="Asteroids" type="Node2D" parent="."]
+
+[node name="Asteroid3" parent="Asteroids" instance=ExtResource("2_p7oq8")]
+position = Vector2(1005, 772)
+scale = Vector2(1.0397, 1.0397)
+
+[node name="Asteroid6" parent="Asteroids" instance=ExtResource("2_p7oq8")]
+position = Vector2(369, 729)
+rotation = 1.83259
+scale = Vector2(0.486576, 0.518888)
+
+[node name="Asteroid7" parent="Asteroids" instance=ExtResource("2_p7oq8")]
+position = Vector2(554, 320)
+rotation = 2.17581
+scale = Vector2(0.635374, 0.635374)
+
+[node name="Asteroid8" parent="Asteroids" instance=ExtResource("2_p7oq8")]
+position = Vector2(1167, 189)
+rotation = -2.49569
+scale = Vector2(0.723804, 0.723804)
+
+[node name="Asteroid9" parent="Asteroids" instance=ExtResource("2_p7oq8")]
+position = Vector2(1518, 629)
+rotation = 2.62021
+scale = Vector2(0.508519, 0.543533)
+
+[node name="PlayerShip" type="Node2D" parent="."]
+position = Vector2(549, 625)
+rotation = -0.281327
+script = ExtResource("3_byy1a")
+
+[node name="LaserBeam2D" parent="PlayerShip" instance=ExtResource("4_5xi8u")]
+position = Vector2(24, 0)
+rotation = 0.0119694
+target_position = Vector2(2000, 0)
+max_length = 2000.0
+color = Color(1.31836, 0.609067, 1.5, 1)
+is_casting = false
+
+[node name="Sprite2D" type="Sprite2D" parent="PlayerShip"]
+texture = ExtResource("5_rr7cx")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("6_4gqsa")

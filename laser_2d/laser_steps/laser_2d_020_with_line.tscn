@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmkk8iqx6aplx"]
+
+[ext_resource type="Script" uid="uid://cxfjanq5off54" path="res://laser_2d/laser_steps/laser_2d_020_with_line.gd" id="1"]
+
+[node name="Laser2DWithLine" type="RayCast2D"]
+target_position = Vector2(1400, 0)
+script = ExtResource("1")
+color = Color(1, 0.254902, 0.490196, 1)
+is_casting = true
+
+[node name="Line2D" type="Line2D" parent="."]
+unique_name_in_owner = true
+visible = false
+modulate = Color(1, 0.254902, 0.490196, 1)
+points = PackedVector2Array(40, 0, 1400, 0)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+sharp_limit = 8.0

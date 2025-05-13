@@ -1,0 +1,301 @@
+[gd_scene load_steps=25 format=3 uid="uid://c1ruobme5mf7l"]
+
+[ext_resource type="Script" uid="uid://dmd5apfadks44" path="res://laser_3d/main/main.gd" id="1_3yjrn"]
+[ext_resource type="Script" uid="uid://b7gsyx3i8hmdo" path="res://laser_3d/main/shoot_manager.gd" id="1_w010k"]
+[ext_resource type="PackedScene" uid="uid://don4817u8figv" path="res://laser_3d/fps_arms/fps_controller.tscn" id="1_x3s0a"]
+[ext_resource type="PackedScene" uid="uid://cg5ib85s40uk0" path="res://laser_3d/vfx/impact/impact.tscn" id="3_7qovb"]
+[ext_resource type="PackedScene" uid="uid://b4cqtavitv24y" path="res://laser_3d/vfx/impact_decal/impact_decal.tscn" id="3_fthyo"]
+[ext_resource type="Shader" uid="uid://c74iigpotyvfh" path="res://laser_3d/assets/sky/sky.gdshader" id="3_i4hsl"]
+[ext_resource type="Texture2D" uid="uid://cn1xv8gcadsl3" path="res://laser_3d/assets/crosshair.png" id="3_stf78"]
+[ext_resource type="PackedScene" uid="uid://beieaq5q0p5sf" path="res://laser_3d/vfx/shot/shot.tscn" id="4_y6yno"]
+[ext_resource type="PackedScene" uid="uid://b8wokawycpbwq" path="res://laser_3d/vfx/laser_beam_3d.tscn" id="9_2xbj8"]
+[ext_resource type="Script" uid="uid://b50juoe2eqm8h" path="res://laser_3d/main/impact_manager.gd" id="9_8y1m4"]
+[ext_resource type="AudioStream" uid="uid://c7gvbn7so5akc" path="res://laser_3d/assets/sounds/laserSmall_001.ogg" id="10_ou4kl"]
+[ext_resource type="Texture2D" uid="uid://brbtohct73mlt" path="res://laser_3d/assets/checkboard.png" id="13_cwe1y"]
+[ext_resource type="Script" uid="uid://joise6c8nhvg" path="res://laser_3d/ui/crosshair.gd" id="13_dau3n"]
+[ext_resource type="PackedScene" uid="uid://c5negq8jua51d" path="res://laser_3d/ui/ammo_counter/ammo_counter.tscn" id="14_oexx2"]
+
+[sub_resource type="Curve" id="Curve_dm5j7"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 2.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_kqpfv"]
+texture_mode = 1
+curve = SubResource("Curve_dm5j7")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xsoe5"]
+shader = ExtResource("3_i4hsl")
+shader_parameter/top_color = Color(0.815686, 0.65098, 1, 1)
+shader_parameter/bottom_color = Color(0.392157, 0.607843, 1, 1)
+shader_parameter/gradient_curve = SubResource("CurveTexture_kqpfv")
+
+[sub_resource type="Sky" id="Sky_wka67"]
+sky_material = SubResource("ShaderMaterial_xsoe5")
+
+[sub_resource type="Environment" id="Environment_10hr7"]
+background_mode = 2
+sky = SubResource("Sky_wka67")
+ambient_light_source = 2
+ambient_light_color = Color(0.772549, 0.764706, 0.847059, 1)
+ambient_light_sky_contribution = 0.5
+tonemap_mode = 2
+ssao_enabled = true
+glow_enabled = true
+glow_strength = 0.25
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_31dii"]
+albedo_color = Color(0.309804, 0.756863, 0.396078, 1)
+albedo_texture = ExtResource("13_cwe1y")
+roughness = 0.8
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+uv1_triplanar_sharpness = 10.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aubcy"]
+shading_mode = 0
+albedo_color = Color(0.815686, 0.65098, 1, 1)
+proximity_fade_enabled = true
+proximity_fade_distance = 4.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_u8hmu"]
+size = Vector2(100, 100)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_bfwmc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ynwlr"]
+size = Vector3(200, 1, 200)
+
+[node name="main" type="Node"]
+script = ExtResource("1_3yjrn")
+
+[node name="World3D" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World3D"]
+environment = SubResource("Environment_10hr7")
+
+[node name="ShootManager" type="Node3D" parent="World3D"]
+script = ExtResource("1_w010k")
+impact_decal_scene = ExtResource("3_fthyo")
+impact_scene = ExtResource("3_7qovb")
+shot_scene = ExtResource("4_y6yno")
+laser_beam_scene = ExtResource("9_2xbj8")
+
+[node name="LaserSound" type="AudioStreamPlayer" parent="World3D/ShootManager"]
+unique_name_in_owner = true
+stream = ExtResource("10_ou4kl")
+volume_db = -10.0
+max_polyphony = 4
+
+[node name="ImpactManager" type="Node3D" parent="World3D"]
+unique_name_in_owner = true
+script = ExtResource("9_8y1m4")
+
+[node name="FpsController" parent="World3D" instance=ExtResource("1_x3s0a")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 4, 3)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="World3D"]
+transform = Transform3D(0.707106, -0.664463, 0.241845, 0, 0.34202, 0.939692, -0.707106, -0.664463, 0.241845, 0, 0, 0)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="Terrain" type="CSGCombiner3D" parent="World3D"]
+material_override = SubResource("StandardMaterial3D_31dii")
+use_collision = true
+metadata/_edit_lock_ = true
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, -2, 4)
+size = Vector3(12, 4, 10)
+
+[node name="CSGBox3D11" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, -11)
+size = Vector3(12, 4, 8)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.7, 3.5)
+size = Vector3(4, 0.6, 5)
+
+[node name="CSGBox3D12" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1, 3.5)
+size = Vector3(2, 2, 5)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1, 2)
+size = Vector3(2, 2, 2)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.75, -1)
+size = Vector3(2, 0.5, 4)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 3.75, -4)
+size = Vector3(7, 0.5, 2)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 3.5)
+size = Vector3(6, 8, 5)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+size = Vector3(2, 8, 4)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1, -6)
+size = Vector3(5, 2, 2)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 2, -4)
+size = Vector3(2, 12, 2)
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="World3D/Terrain"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7, 0, 5.5)
+polygon = PackedVector2Array(-0.5, 0, 2.5, 2, 2.5, 0)
+depth = 2.0
+
+[node name="CSGPolygon3D4" type="CSGPolygon3D" parent="World3D/Terrain"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -6, 0, -9.5)
+polygon = PackedVector2Array(-0.5, 0, 2.5, 2, 2.5, 0)
+depth = 2.0
+
+[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 2, 6)
+polygon = PackedVector2Array(-0.5, 0, 2.5, 2, 2.5, 0)
+depth = 5.0
+
+[node name="CSGPolygon3D3" type="CSGPolygon3D" parent="World3D/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 2, -5)
+polygon = PackedVector2Array(-0.5, 0, 2.5, 2, 2.5, 0)
+depth = 2.0
+
+[node name="CastShadow" type="CSGCombiner3D" parent="World3D"]
+layers = 2
+cast_shadow = 3
+metadata/_edit_lock_ = true
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, -2, 4)
+size = Vector3(12, 4, 10)
+
+[node name="CSGBox3D11" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, -11)
+size = Vector3(12, 4, 8)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.7, 3.5)
+size = Vector3(4, 0.6, 5)
+
+[node name="CSGBox3D12" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1, 3.5)
+size = Vector3(2, 2, 5)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1, 2)
+size = Vector3(2, 2, 2)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.75, -1)
+size = Vector3(2, 0.5, 4)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 3.75, -4)
+size = Vector3(7, 0.5, 2)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 3.5)
+size = Vector3(6, 8, 5)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+size = Vector3(2, 8, 4)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1, -6)
+size = Vector3(5, 2, 2)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 2, -4)
+size = Vector3(2, 12, 2)
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="World3D/CastShadow"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7, 0, 5.5)
+polygon = PackedVector2Array(-0.5, 0, 2.5, 2, 2.5, 0)
+depth = 2.0
+
+[node name="CSGPolygon3D4" type="CSGPolygon3D" parent="World3D/CastShadow"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -6, 0, -9.5)
+polygon = PackedVector2Array(-0.5, 0, 2.5, 2, 2.5, 0)
+depth = 2.0
+
+[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 2, 6)
+polygon = PackedVector2Array(-0.5, 0, 2.5, 2, 2.5, 0)
+depth = 5.0
+
+[node name="CSGPolygon3D3" type="CSGPolygon3D" parent="World3D/CastShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 2, -5)
+polygon = PackedVector2Array(-0.5, 0, 2.5, 2, 2.5, 0)
+depth = 2.0
+
+[node name="Bottom" type="Node3D" parent="World3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+
+[node name="Fog" type="MeshInstance3D" parent="World3D/Bottom"]
+material_override = SubResource("StandardMaterial3D_aubcy")
+mesh = SubResource("PlaneMesh_u8hmu")
+skeleton = NodePath("../..")
+metadata/_edit_lock_ = true
+
+[node name="BottomArea" type="Area3D" parent="World3D/Bottom"]
+unique_name_in_owner = true
+collision_layer = 2
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World3D/Bottom/BottomArea"]
+shape = SubResource("WorldBoundaryShape3D_bfwmc")
+
+[node name="HeightLimit" type="Area3D" parent="World3D" groups=["limit"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0)
+collision_layer = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World3D/HeightLimit"]
+shape = SubResource("BoxShape3D_ynwlr")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="UI" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CrossHair" type="TextureRect" parent="CanvasLayer/UI"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.5
+offset_top = -9.0
+offset_right = 8.5
+offset_bottom = 9.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_stf78")
+script = ExtResource("13_dau3n")
+
+[node name="AmmoCounter" parent="CanvasLayer/UI" instance=ExtResource("14_oexx2")]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -72.0
+offset_right = 46.0
+offset_bottom = -32.0
+grow_vertical = 0

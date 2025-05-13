@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3 uid="uid://7v62ees4irsu"]
+
+[ext_resource type="Script" uid="uid://dnp1un7jig16o" path="res://laser_3d/resources/weapon_data.gd" id="1_36itb"]
+
+[resource]
+script = ExtResource("1_36itb")
+weapon_name = "Laser Gun"
+max_ammo = 5
+max_mag = 4

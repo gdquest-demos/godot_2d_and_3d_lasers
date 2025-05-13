@@ -1,0 +1,103 @@
+[gd_scene load_steps=12 format=3 uid="uid://b8wokawycpbwq"]
+
+[ext_resource type="Script" uid="uid://dt8o4ehqc5fxs" path="res://laser_3d/vfx/laser_beam_3d.gd" id="1_ohkaa"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_odg34"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_fkumd"]
+material = SubResource("StandardMaterial3D_odg34")
+size = Vector3(0.1, 0.1, 1)
+
+[sub_resource type="Gradient" id="Gradient_h1p6v"]
+offsets = PackedFloat32Array(0.582915, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g30mk"]
+gradient = SubResource("Gradient_h1p6v")
+
+[sub_resource type="Curve" id="Curve_06u2w"]
+_data = [Vector2(0.518072, 1), 0.0, -3.53434, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_6w0lk"]
+width = 2048
+curve = SubResource("Curve_06u2w")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hvaxw"]
+emission_shape = 1
+emission_sphere_radius = 0.05
+direction = Vector3(0, 0, -1)
+spread = 20.0
+initial_velocity_min = 2.0
+initial_velocity_max = 3.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.1
+scale_max = 0.2
+scale_curve = SubResource("CurveTexture_6w0lk")
+color_ramp = SubResource("GradientTexture2D_g30mk")
+
+[sub_resource type="SphereMesh" id="SphereMesh_dqmlt"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_81fpx"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 0.0
+emission_ring_radius = 0.05
+emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 90.0
+direction = Vector3(0, 0, 1)
+spread = 15.0
+initial_velocity_min = 0.1
+initial_velocity_max = 0.5
+gravity = Vector3(0, 0, 0)
+scale_min = 0.02
+scale_max = 0.08
+color = Color(1, 0.8, 0.2, 1)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6iu76"]
+emission_shape = 3
+emission_box_extents = Vector3(0.05, 0.05, 0.5)
+direction = Vector3(0, 0, 0)
+spread = 90.0
+initial_velocity_min = 0.1
+initial_velocity_max = 0.5
+gravity = Vector3(0, 0, 0)
+scale_min = 0.02
+scale_max = 0.05
+color = Color(1, 0.8, 0.2, 1)
+
+[node name="LaserBeam3D" type="RayCast3D"]
+target_position = Vector3(0, 0, 0)
+script = ExtResource("1_ohkaa")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_fkumd")
+
+[node name="CastingParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 30
+lifetime = 0.3
+process_material = SubResource("ParticleProcessMaterial_hvaxw")
+draw_pass_1 = SubResource("SphereMesh_dqmlt")
+
+[node name="CollisionParticles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+emitting = false
+amount = 16
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.8
+process_material = SubResource("ParticleProcessMaterial_81fpx")
+draw_pass_1 = SubResource("SphereMesh_dqmlt")
+
+[node name="BeamParticles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+cast_shadow = 0
+emitting = false
+amount = 40
+lifetime = 0.5
+visibility_aabb = AABB(-4, -4, -20, 8, 8, 40)
+process_material = SubResource("ParticleProcessMaterial_6iu76")
+draw_pass_1 = SubResource("SphereMesh_dqmlt")
