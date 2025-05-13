@@ -21,7 +21,11 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	target_position = target_position.move_toward(Vector2.RIGHT * max_length, cast_speed * delta)
+	target_position.x = move_toward(
+		target_position.x,
+		max_length,
+		cast_speed * delta
+	)
 
 	force_raycast_update()
 
