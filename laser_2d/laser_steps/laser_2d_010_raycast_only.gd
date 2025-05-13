@@ -37,7 +37,5 @@ func set_is_casting(new_value: bool) -> void:
 
 	set_physics_process(is_casting)
 
-	if is_casting:
-		target_position = Vector2.RIGHT * start_distance
-	else:
+	if is_casting == false:
 		target_position = Vector2.ZERO
