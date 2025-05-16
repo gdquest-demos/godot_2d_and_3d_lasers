@@ -61,10 +61,11 @@ position = Vector2(1518, 629)
 rotation = 2.62021
 scale = Vector2(0.508519, 0.543533)
 
-[node name="PlayerShip" type="Node2D" parent="."]
+[node name="PlayerShip" type="Node2D" parent="." node_paths=PackedStringArray("laser")]
 position = Vector2(549, 625)
 rotation = -0.281327
 script = ExtResource("3_byy1a")
+laser = NodePath("LaserBeam2D")
 
 [node name="LaserBeam2D" parent="PlayerShip" instance=ExtResource("4_5xi8u")]
 position = Vector2(24, 0)
